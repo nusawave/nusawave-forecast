@@ -1,0 +1,37 @@
+{
+  "regions": {
+    "Select Region": {},
+    "Indonesia": {
+      "forecast_types": {
+        "Weather": {
+          "parameters": {
+            "rain": [],
+            "sfc_temp": [],
+            "rh": [],
+            "mslp": []
+          },
+          "models": ["GFS", "ECMWF"],
+          "timestamps": []
+        },
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [],
+            "swh": [],
+            "swell": []
+          },
+          "models": ["GFS", "WW3"],
+          "timestamps": []
+        },
+        "Ocean": {
+          "parameters": {
+            "sst": [],
+            "sss": [],
+            "ssh": []
+          },
+          "models": ["HYCOM"],
+          "timestamps": []
+        }
+      }
+    }
+  }
+}
