@@ -33,10 +33,31 @@ body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, '
 
 /* Controls */
 .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-.controls select{padding:8px 10px;border:1px solid #dfeaf7;border-radius:8px;background:white}
-.timectrl{display:flex;gap:8px;margin-left:auto}
-.timectrl button{padding:8px 12px;border-radius:8px;border:1px solid #dfeaf7;background:white;cursor:pointer}
+.controls select{
+    padding:8px 10px;
+    border:1px solid #dfeaf7;
+    border-radius:8px;
+    background:white;
+    min-width:200px;
+    max-width:200px;
+}
 
+.timectrl-top {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin: 12px 0;
+}
+
+.timectrl-top button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #dfeaf7;
+    background: white;
+    cursor: pointer;
+}
 
 .map-container{background:linear-gradient(180deg,#f6fbff,#ffffff);border:1px solid #e6eef9;border-radius:10px;padding:8px}
 .map-container img{width:100%;height:auto;display:block;border-radius:6px}
@@ -56,5 +77,9 @@ body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, '
 .menu{flex-direction:column}
 .controls{flex-direction:column;align-items:stretch}
 .timectrl{margin-left:0}
+.controls select{
+    min-width:100%;
+    max-width:100%;
+}
 }
 select::-ms-expand{display:none}

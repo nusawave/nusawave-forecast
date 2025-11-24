@@ -42,19 +42,20 @@
         <h2>Map Forecast</h2>
 
         <div class="controls">
-          <select id="regionSelect"></select>
-          <select id="modelSelect"></select>
-          <select id="parameterSelect"></select>
-          <select id="timeSelect"></select>
+            <select id="regionSelect"></select>
+            <select id="forecastSelect"></select>
+            <select id="parameterSelect"></select>
+            <select id="modelSelect"></select>
+            <select id="timeSelect"></select>
 
-          <div class="timectrl">
-            <button id="prevBtn">⬅️</button>
-            <button id="playBtn">▶️</button>
-            <button id="nextBtn">➡️</button>
-          </div>
+        <div class="timectrl-top">
+          <button id="prevBtn">⬅️</button>
+          <button id="playBtn">▶️</button>
+          <button id="nextBtn">➡️</button>
+        </div>
         </div>
 
-        <div class="map-container">
+        <div class="map-container" id="regionMap">
           <img id="mapImage" src="" alt="No map selected" />
         </div>
       </section>
