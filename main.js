@@ -75,7 +75,7 @@
         // If config doesn't have that region yet, keep static map visible
         if (!CONFIG || !CONFIG.regions || !CONFIG.regions[region]) {
             // show the base static map
-            mapImage.src = "assets/maps/staticmap.png";
+            mapImage.src = "assets/maps/staticmap.webp";
             return;
         }
 
@@ -103,7 +103,7 @@
             populate(timeSelect, ["Time (Select a region first)"]);
 
             // Keep the base static map visible (do NOT clear src)
-            mapImage.src = "assets/maps/staticmap.png";
+            mapImage.src = "assets/maps/staticmap.webp";
             return;
         }
         const types = Object.keys(CONFIG.regions[region]?.forecast_types || { 'Select Forecast Types': {} });
