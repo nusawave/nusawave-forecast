@@ -1,0 +1,24 @@
+│
+├── core/
+│   ├── base_handler.py
+│   ├── plot_config.py
+│   ├── plotter.py
+│   ├── utils.py
+│
+├── handlers/
+│   ├── rain.py
+│   ├── temp.py
+│   ├── rh.py
+│   ├── mslp.py
+│   ├── wind.py
+│   ├── swh.py
+│   ├── swell.py
+│   ├── sst.py
+│   ├── sss.py
+│   ├── ssh.py
+│   ├── currents.py
+│
+├── configs/
+│   └── params.yaml
+│
+└── __init__.py
