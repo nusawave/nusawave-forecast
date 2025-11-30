@@ -2,7 +2,7 @@ from ..core.base_handler import BaseHandler
 from ..core.utils import load_model_params
 import cartopy.crs as ccrs
 
-class RainHandler(BaseHandler):
+class RainrateHandler(BaseHandler):
     def load(self, ds):
         mapper = load_model_params(self.config.dataset)
         varnames = mapper["rainrate"]

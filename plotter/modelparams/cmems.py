@@ -1,6 +1,6 @@
 VARIABLE_MAP = {
-    "rainrate": {"var": "apcpsfc"},
-    "wind": {"u": "ugrdsfc", "v": "vgrdsfc"},
-    "swh": {"hs": "htsgwsfc", "dir": "dirpwsfc"},
-    "seatemp": {"var": "tmpsfc"},
+    "seacurrent": {"u": "", "v": ""},
+    "seatemp": {"var": ""},
+    "seasalt": {"var": ""},
+    "ssh": {"var": ""},
 }

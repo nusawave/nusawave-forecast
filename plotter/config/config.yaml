@@ -36,11 +36,6 @@ variables:
     cmap: Blues
     clims: [0, 20]
 
-  wind:
-    quiver:
-      skip: 5
-      scale: 80
-
   mslp:
     levels:
       start: 980
@@ -49,3 +44,41 @@ variables:
     contour:
       linewidth: 0.7
       interval: 2
+  
+  temp:
+    cmap: RdYlBu_r
+    clims: [20, 35]
+  
+  relhum:
+    cmap: BrBG
+    clims: [0, 100]
+
+  wind:
+    quiver:
+      skip: 5
+      scale: 80
+  
+  swh:
+    cmap: YlGnBu
+    clims: [0, 6]
+
+  swell:
+    cmap: PuBuGn
+    clims: [0, 6]
+
+  seacurrent:
+    quiver:
+      skip: 5
+      scale: 50
+
+  seatemp:
+    cmap: RdYlBu_r
+    clims: [20, 35]
+  
+  seasalt:
+    cmap: BrBG
+    clims: [0, 35]
+
+  ssh:
+    cmap: PuBuGn
+    clims: [-1, 1]

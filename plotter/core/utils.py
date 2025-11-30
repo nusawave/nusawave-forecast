@@ -1,5 +1,19 @@
+import sys
 import importlib
 import cartopy.crs as ccrs
+from pathlib import Path
+
+def _ensure_project_root():
+    """
+    Ensure that the project root (directory containing 'plotter/')
+    is available in sys.path.
+    """
+    current_file = Path(__file__).resolve()
+
+    root = current_file.parents[2]
+
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
 
 def get_projection(name):
     if name == "mercator":
@@ -16,11 +30,24 @@ def apply_bbox(ax, bbox):
         ax.set_extent([min_lon, max_lon, min_lat, max_lat], crs=ccrs.PlateCarree())
 
 def load_model_params(dataset):
+    _ensure_project_root()
+
+    module_name = f"plotter.modelparams.{dataset}"
+
     try:
-        module = importlib.import_module(f"plotter.modelparams.{dataset}")
-        return module.VARIABLE_MAP
+        module = importlib.import_module(module_name)
     except ModuleNotFoundError:
-        raise ValueError(f"Dataset '{dataset}' does not exist in modelparams/")
+        raise ValueError(
+            f"[ERROR] Dataset selector '{dataset}' not found.\n"
+            f"Expected at: plotter/modelparams/{dataset}.py"
+        )
+
+    if not hasattr(module, "VARIABLE_MAP"):
+        raise ValueError(
+            f"[ERROR] Dataset module '{module_name}' does not define VARIABLE_MAP"
+        )
+
+    return module.VARIABLE_MAP
 
 def select_time(ds, cfg):
     if cfg.time_index is not None:
@@ -66,7 +93,7 @@ def get_dataset_url(dataset, cycle):
         return f"https://nomads.ncep.noaa.gov/dods/gfs_0p25/gfs{y}{m}{d}/gfs_0p25_{h}z"
     
     if dataset == "gfswave":
-        return f"https://nomads.ncep.noaa.gov/dods/gfswave/gfswave_global_{y}{m}{d}_{h}z"
+        return f"https://nomads.ncep.noaa.gov/dods/wave/gfswave/{y}{m}{d}/gfswave.global.0p25_{h}z"
     
     if dataset == "ecmwfatmos":
         return f"https://example.ecmwf.int/era5_{y}{m}{d}_{h}.nc"   # placeholder
@@ -81,3 +108,19 @@ def get_dataset_url(dataset, cycle):
         return f"https://my.cmems-duacs.org/dods/global-analysis-forecast-phy/{y}{m}{d}.nc"
 
     raise ValueError("Unknown dataset source")
+
+def deep_update(base: dict, updates: dict):
+    """
+    Recursively merge two dictionaries.
+    Values in updates override those in base.
+    """
+    for k, v in updates.items():
+        if (
+            k in base 
+            and isinstance(base[k], dict) 
+            and isinstance(v, dict)
+        ):
+            deep_update(base[k], v)
+        else:
+            base[k] = v
+    return base

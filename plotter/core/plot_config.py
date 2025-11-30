@@ -10,11 +10,10 @@ class PlotConfig:
         # Styling and figure behavior
         proj="mercator",
         figsize=(8, 6),
-        dpi=120,
+        dpi=80,
         cmap="viridis",
         clims=None,
         outfile=None,
-        arrowscale=80,
 
         # Scientific dimension selections
         time_index=None,      # time index (int)
@@ -37,7 +36,6 @@ class PlotConfig:
         self.clims = clims
         self.bbox = bbox
         self.outfile = outfile
-        self.arrowscale = arrowscale
 
         # Flexible scientific configuration
         self.time_index = time_index
@@ -46,6 +44,19 @@ class PlotConfig:
         self.depth = depth
         self.dataset = dataset
         self.region = region
+
+        self.quiver = {
+            "skip": 5,
+            "scale": 80,
+            "width": 0.002,
+            "color": "black",
+        }
+
+        self.contour = {
+            "interval": 2,
+            "linewidth": 0.7,
+            "colors": "black",
+        }
 
         # Dynamic config overrides (from YAML)
         for k, v in kwargs.items():

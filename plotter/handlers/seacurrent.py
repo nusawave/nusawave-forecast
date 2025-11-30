@@ -16,14 +16,15 @@ class SeacurrentHandler(BaseHandler):
         v = self.select_bbox(v)
         return u, v
 
-    def plot(self, ax, u, v):
-
+    def plot(self, ax, data):
+        u, v = data
         skip = self.config.quiver.get("skip", 5)
+        scale = self.config.quiver.get("scale", 80)
         ax.quiver(
             u.lon[::skip], u.lat[::skip],
             u[::skip, ::skip], v[::skip, ::skip],
             transform=ccrs.PlateCarree(),
-            scale=self.config.quiver.scale,
+            scale=scale,
             width=0.002,
         )
         return None

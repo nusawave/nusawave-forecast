@@ -3,7 +3,7 @@ from ..core.base_handler import BaseHandler
 import cartopy.crs as ccrs
 import numpy as np
 
-class WavesHandler(BaseHandler):
+class SwhHandler(BaseHandler):
     def load(self, ds):
         mapper = load_model_params(self.config.dataset)
         varnames = mapper["swh"]
@@ -15,11 +15,19 @@ class WavesHandler(BaseHandler):
         dir = select_bbox(dir, self.config)
         return mag, dir
 
-    def plot(self, ax, mag, dir):
-        
-        skip = self.config.quiver.get("skip", 5)
+    def plot(self, ax, data):
+        mag, direction = data
 
-        # wave height shading
+        lon = mag.lon.values
+        lat = mag.lat.values
+
+        dir_rad = np.deg2rad(direction.values)
+        u = -np.sin(dir_rad)
+        v = -np.cos(dir_rad)
+
+        skip = self.config.quiver.get("skip", 5)
+        scale = self.config.quiver.get("scale", 80)
+
         im = ax.pcolormesh(
             mag.lon, mag.lat, mag,
             cmap=self.config.cmap,
@@ -27,13 +35,11 @@ class WavesHandler(BaseHandler):
             transform=ccrs.PlateCarree(),
         )
 
-        # wave direction arrows
         ax.quiver(
-            mag.lon[::skip], mag.lat[::skip],
-            -np.sin(np.deg2rad(dir[::skip, ::skip])),
-            -np.cos(np.deg2rad(dir[::skip, ::skip])),
+            lon[::skip], lat[::skip],
+            u[::skip, ::skip], v[::skip, ::skip],
             transform=ccrs.PlateCarree(),
-            scale=self.config.quiver.scale,
+            scale=scale,
         )
 
         return im

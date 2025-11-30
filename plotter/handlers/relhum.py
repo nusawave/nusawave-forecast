@@ -2,14 +2,14 @@ from ..core.base_handler import BaseHandler
 from ..core.utils import load_model_params, select_time, select_level, select_bbox
 import cartopy.crs as ccrs
 
-class HumidityHandler(BaseHandler):
+class RelhumHandler(BaseHandler):
     def load(self, ds):
         mapper = load_model_params(self.config.dataset)
-        varnames = mapper["rh"]
+        varnames = mapper["relhum"]
         dset = ds[varnames["var"]]
-        dset = self.select_time(dset)
-        dset = self.select_level(dset)
-        dset = self.select_bbox(dset)
+        dset = select_time(dset, self.config)
+        dset = select_level(dset, self.config)
+        dset = select_bbox(dset, self.config)
         return dset
     
     def plot(self, ax, rh):

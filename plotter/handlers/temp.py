@@ -2,7 +2,7 @@ from ..core.utils import load_model_params, select_bbox, select_time, select_lev
 from ..core.base_handler import BaseHandler
 import cartopy.crs as ccrs
 
-class TemperatureHandler(BaseHandler):
+class TempHandler(BaseHandler):
     def load(self, ds):
         mapper = load_model_params(self.config.dataset)
         varnames = mapper["temp"]
