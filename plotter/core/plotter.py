@@ -9,18 +9,31 @@ class Plotter:
 
     def __init__(self, config):
         self.config = config
-        self.param_config = load_param_config()
+        self.yaml_cfg  = load_param_config()
 
     def _apply_param_config(self, param):
-        if param not in self.param_config:
+        if param not in self.yaml_cfg.get("variables", {}):
             return
 
-        overrides = self.param_config[param]
+        overrides = self.yaml_cfg["variables"][param]
         for key, value in overrides.items():
             setattr(self.config, key, value)
-            
+
+    def _apply_region_config(self):
+        """Apply region overrides (bbox, quiver skip, figsize, etc.)."""
+        if not self.config.region:
+            return
+
+        regions = self.yaml_cfg.get("regions", {})
+        if self.config.region not in regions:
+            return
+
+        overrides = regions[self.config.region]
+        for key, value in overrides.items():
+            setattr(self.config, key, value)
+
     def _load_handler(self, param):
-        module = importlib.import_module(f"nusawave_plotter.handlers.{param}")
+        module = importlib.import_module(f"plotter.handlers.{param}")
         class_name = param.capitalize() + "Handler"
         handler_class = getattr(module, class_name)
         return handler_class(self.config)

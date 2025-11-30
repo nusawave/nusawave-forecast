@@ -1,0 +1,51 @@
+# ========================================================
+# REGION DEFINITIONS
+# ========================================================
+regions:
+
+  indonesia:
+    bbox: [90, 150, -15, 15]
+    figsize: [9, 7]
+    arrowscale: 60
+    quiver:
+      skip: 4
+      scale: 55
+
+  southeast_asia:
+    bbox: [80, 160, -20, 25]
+    figsize: [10, 8]
+    arrowscale: 90
+    quiver:
+      skip: 6
+      scale: 80
+
+# ========================================================
+# GLOBAL FALLBACK DEFAULTS
+# ========================================================
+defaults:
+  proj: mercator
+  dpi: 90
+  figsize: [8, 6]
+
+# ========================================================
+# VARIABLE-SPECIFIC SETTINGS
+# ========================================================
+variables:
+
+  rainrate:
+    cmap: Blues
+    clims: [0, 20]
+
+  wind:
+    quiver:
+      skip: 5
+      scale: 80
+
+  mslp:
+    levels:
+      start: 980
+      end: 1050
+      step: 2
+    contour:
+      linewidth: 0.7
+      interval: 2

@@ -7,23 +7,29 @@ class PlotConfig:
 
     def __init__(
         self,
+        # Styling and figure behavior
         proj="mercator",
         figsize=(8, 6),
         dpi=120,
         cmap="viridis",
         clims=None,
-        bbox=None,
         outfile=None,
         arrowscale=80,
 
-        # new optional flexible parameters
-        level=None,
-        depth=None,
-        dataset=None,
+        # Scientific dimension selections
+        time_index=None,      # time index (int)
+        time_value=None,      # actual timestamp
+        bbox=None,            # [min_lon, max_lon, min_lat, max_lat]
+        level=None,           # pressure level (hPa)
+        depth=None,           # depth selection (meters)
+        dataset=None,         # gfs, ecmwf, hycom
+
+        # Region name ("indonesia", "sumatra")
+        region=None,
 
         **kwargs,
     ):
-        # explicit stable API
+        # Explicit stable API
         self.proj = proj
         self.figsize = figsize
         self.dpi = dpi
@@ -33,11 +39,14 @@ class PlotConfig:
         self.outfile = outfile
         self.arrowscale = arrowscale
 
-        # flexible scientific extensions
+        # Flexible scientific configuration
+        self.time_index = time_index
+        self.time_value = time_value
         self.level = level
         self.depth = depth
         self.dataset = dataset
+        self.region = region
 
-        # dynamic config overrides (from YAML)
+        # Dynamic config overrides (from YAML)
         for k, v in kwargs.items():
             setattr(self, k, v)
