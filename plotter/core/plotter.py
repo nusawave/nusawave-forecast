@@ -81,7 +81,7 @@ class Plotter:
         if self.config.outfile:
             if not os.path.exists(os.path.dirname(self.config.outfile)):
                 os.makedirs(os.path.dirname(self.config.outfile))
-            plt.savefig(self.config.outfile, format="webp", dpi=self.config.dpi)
+            plt.savefig(self.config.outfile, format="webp", dpi=self.config.dpi, bbox_inches='tight')
 
         plt.close(fig)
 

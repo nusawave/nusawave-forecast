@@ -12,8 +12,8 @@ regions:
       scale: 55
 
   southeast_asia:
-    bbox: [80, 160, -20, 25]
-    figsize: [10, 8]
+    bbox: [80, 160, -25, 25]
+    # figsize: [10, 8]
     arrowscale: 90
     quiver:
       skip: 6
