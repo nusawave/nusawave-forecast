@@ -14,6 +14,10 @@ class PlotConfig:
         cmap="viridis",
         clims=None,
         outfile=None,
+        var2display=None,
+        region=None,
+        baserun=None,
+        datasource=None,
 
         # Scientific dimension selections
         time_index=None,      # time index (int)
@@ -22,9 +26,6 @@ class PlotConfig:
         level=None,           # pressure level (hPa)
         depth=None,           # depth selection (meters)
         dataset=None,         # gfs, ecmwf, hycom
-
-        # Region name ("indonesia", "sumatra")
-        region=None,
 
         **kwargs,
     ):
@@ -36,6 +37,9 @@ class PlotConfig:
         self.clims = clims
         self.bbox = bbox
         self.outfile = outfile
+        self.var2display = var2display
+        self.baserun = baserun
+        self.datasource = datasource
 
         # Flexible scientific configuration
         self.time_index = time_index

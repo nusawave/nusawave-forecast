@@ -54,9 +54,10 @@ variables:
     clims: [0, 100]
 
   wind:
+    var2display: "Surface Wind Speed and Direction"
     quiver:
       skip: 5
-      scale: 80
+      scale: 40
   
   swh:
     cmap: YlGnBu
