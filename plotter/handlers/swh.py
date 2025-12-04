@@ -2,6 +2,7 @@ from ..core.utils import load_model_params, select_bbox, select_time
 from ..core.base_handler import BaseHandler
 import cartopy.crs as ccrs
 import numpy as np
+import matplotlib.colors as mcolors
 
 class SwhHandler(BaseHandler):
     def load(self, ds):
@@ -25,13 +26,23 @@ class SwhHandler(BaseHandler):
         u = -np.sin(dir_rad)
         v = -np.cos(dir_rad)
 
+        cmap = mcolors.ListedColormap(self.config.cmap)
+        norm = mcolors.BoundaryNorm(
+            boundaries=self.config.levels,
+            ncolors=cmap.N,
+            extend=self.config.extend,
+        )
         skip = self.config.quiver.get("skip", 5)
         scale = self.config.quiver.get("scale", 80)
+        extend = self.config.extend
 
-        im = ax.pcolormesh(
+        im = ax.contourf(
             mag.lon, mag.lat, mag,
-            cmap=self.config.cmap,
+            cmap=cmap,
+            norm=norm,
+            levels=self.config.levels,
             shading="auto",
+            extend=extend,
             transform=ccrs.PlateCarree(),
         )
 

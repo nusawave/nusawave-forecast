@@ -30,13 +30,22 @@ class WindHandler(BaseHandler):
 
         skip = self.config.quiver.get("skip", 5)
         scale = self.config.quiver.get("scale", 80)
+        width = self.config.quiver.get("width", 0.001)
+        headwidth=self.config.quiver.get("headwidth",5.5)
+        headlength=self.config.quiver.get("headlength", 6)
+        headaxislength=self.config.quiver.get("headaxislength", 4)
+        minlength=self.config.quiver.get("minlength", 1)
+        minshaft=self.config.quiver.get("minshaft", 1)
 
         mag = np.sqrt(u_np**2 + v_np**2)
+        u_np = u_np / mag
+        v_np = v_np / mag
 
-        ax.pcolormesh(
+        im = ax.contourf(
             u.lon, u.lat, mag,
             cmap=self.config.cmap,
             shading="auto",
+            extend='max',
             transform=ccrs.PlateCarree(),
         )
 
@@ -45,7 +54,12 @@ class WindHandler(BaseHandler):
             u_np[::skip, ::skip], v_np[::skip, ::skip],
             transform=ccrs.PlateCarree(),
             scale=scale,
-            width=0.001,
+            width=width,
+            headwidth=headwidth,
+            headlength=headlength,
+            headaxislength=headaxislength,
+            minlength=minlength,
+            minshaft=minshaft,
         )
 
-        return None
+        return im

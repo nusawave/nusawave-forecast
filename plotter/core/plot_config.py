@@ -12,6 +12,8 @@ class PlotConfig:
         figsize=(8, 6),
         dpi=80,
         cmap="viridis",
+        levels=None,
+        extend=None,
         clims=None,
         outfile=None,
         var2display=None,
@@ -34,6 +36,8 @@ class PlotConfig:
         self.figsize = figsize
         self.dpi = dpi
         self.cmap = cmap
+        self.levels = levels
+        self.extend = extend
         self.clims = clims
         self.bbox = bbox
         self.outfile = outfile

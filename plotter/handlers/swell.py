@@ -28,10 +28,11 @@ class SwellHandler(BaseHandler):
         skip = self.config.quiver.get("skip", 5)
         scale = self.config.quiver.get("scale", 80)
 
-        im = ax.pcolormesh(
+        im = ax.contourf(
             mag.lon, mag.lat, mag,
             cmap=self.config.cmap,
             shading="auto",
+            extend="max",
             transform=ccrs.PlateCarree(),
         )
 

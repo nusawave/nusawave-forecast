@@ -33,10 +33,16 @@ defaults:
 variables:
 
   rainrate:
+    var2display: "Rainfall Rate"
+    unit: "mm/hr"
+    cbrlabel: "Rainfall Rate"
     cmap: Blues
     clims: [0, 20]
 
   mslp:
+    var2display: "Mean Sea Level Pressure"
+    unit: "hPa"
+    cbrlabel: "MSLP"
     levels:
       start: 980
       end: 1050
@@ -46,40 +52,70 @@ variables:
       interval: 2
   
   temp:
+    var2display: "Air Temperature"
+    unit: "degC"
+    cbrlabel: "Air Temperature"
     cmap: RdYlBu_r
-    clims: [20, 35]
+    levels: [20, 35]
   
   relhum:
+    var2display: "Relative Humidity"
+    unit: "%"
+    cbrlabel: "Relative Humidity"
     cmap: BrBG
-    clims: [0, 100]
+    levels: [0, 100]
 
   wind:
     var2display: "Surface Wind Speed and Direction"
-    quiver:
-      skip: 5
-      scale: 40
+    unit: "knots"
+    cbrlabel: "Surface Wind Speed and Direction"
+    arrlabel: "Wind Direction"
+    levels: [0,2,4,6,8,10,15,20,25,30,35,40,50,60]
   
   swh:
+    var2display: "Significant Wave Height and Direction"
+    unit: "meter"
+    cbrlabel: "Significant Wave Height and Direction"
+    arrlabel: "Wave Direction"
     cmap: YlGnBu
-    clims: [0, 6]
+    levels: [0,0.5,0.75,1,1.25,1.5,2,2.5,3,3.5,4,5,6,7]
+    cmap: ["#0760E6", "#3175BC", "#5BBEE7", "#01FBBE", "#01D743",
+          "#FFFB52", "#FFAB31", "#FF7D29", "#9C4510", "#E7453A",
+          "#C72C32", "#E734C6", "#B5349B", "#691D77"]
+    extend: "max"
 
   swell:
+    var2display: "Primary Swell Height and Direction"
+    unit: "meter"
+    cbrlabel: "Primary Swell Wave Height and Direction"
+    arrlabel: "Wave Direction"
     cmap: PuBuGn
-    clims: [0, 6]
+    levels: [0,0.5,0.75,1,1.25,1.5,2,2.5,3,3.5,4,5,6,7]
 
   seacurrent:
-    quiver:
-      skip: 5
-      scale: 50
+    var2display: "Sea Current and Direction"
+    unit: "cm/s"
+    cbrlabel: "Sea Current and Direction"
+    arrlabel: "Current Direction"
+    levels: [0, 5, 10, 20, 30, 45, 60, 80, 100, 150, 200, 300, 400]
 
   seatemp:
+    var2display: "Sea Temperature"
+    unit: "degC"
+    cbrlabel: "Sea Temperature"
     cmap: RdYlBu_r
-    clims: [20, 35]
+    levels: [16,18,20,22,24,26,26.5,27,27.5,28,28.5,29,29.5,30,30.5,31,31.5,32,34,36]
   
   seasalt:
+    var2display: "Sea Salinity"
+    unit: "PSU"
+    cbrlabel: "Sea Salinity"
     cmap: BrBG
-    clims: [0, 35]
+    levels: [30,30.5,31,31.5,32,32.5,33,33.5,34,34.5,35,35.5,36]
 
   ssh:
+    var2display: "Sea Surface Height"
+    unit: "meter"
+    cbrlabel: "Sea Surface Height"
     cmap: PuBuGn
-    clims: [-1, 1]
+    levels: [-2,-1.75,-1.5,-1.25,-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1,1.25,1.5,1.75,2]
