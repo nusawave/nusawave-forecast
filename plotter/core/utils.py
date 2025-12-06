@@ -24,11 +24,6 @@ def get_projection(name):
         return ccrs.NorthPolarStereo()
     return ccrs.PlateCarree()
 
-def apply_bbox(ax, bbox):
-    if bbox:
-        min_lon, max_lon, min_lat, max_lat = bbox
-        ax.set_extent([min_lon, max_lon, min_lat, max_lat], crs=ccrs.PlateCarree())
-
 def load_model_params(dataset):
     _ensure_project_root()
 
