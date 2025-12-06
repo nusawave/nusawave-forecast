@@ -3,11 +3,13 @@ import os
 import sys
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
-from .utils import get_projection, apply_bbox, deep_update
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from .utils import get_projection, deep_update
 from .config_loader import load_param_config
 from pathlib import Path
 from matplotlib.offsetbox import (AnchoredOffsetbox, HPacker,
-                                TextArea, OffsetImage)
+                                TextArea)
 from matplotlib.ticker import FuncFormatter
 from datetime import datetime
 
@@ -67,6 +69,11 @@ class Plotter:
         handler_class = getattr(module, class_name)
         return handler_class(self.config)
 
+    def _apply_bbox(self, ax, bbox):
+        if bbox:
+            min_lon, max_lon, min_lat, max_lat = bbox
+            ax.set_extent([min_lon, max_lon, min_lat, max_lat], crs=ccrs.PlateCarree())
+        
     def plot_map(self, ds, param):
         self._apply_region_config(self.config.region)
         self._apply_param_config(param)
@@ -125,8 +132,43 @@ class Plotter:
                 arrax.arrow(0+0.02, 0, arrow_length, arrow_width, head_width=head_width, head_length=head_length, fc='k', ec='k')
                 arrax.axis('off')
 
-        ax.coastlines()
-        apply_bbox(ax, self.config.bbox)
+        ax.coastlines(linewidth=1, zorder=2)
+        ax.add_feature(cfeature.BORDERS, linewidth=1, zorder=3)
+        ax.add_feature(cfeature.LAND, edgecolor='black', facecolor='gray', zorder=2)
+        self._apply_bbox(ax, self.config.bbox)
+        ax.spines['geo'].set_visible(True)
+        gl = ax.gridlines(
+            crs=ccrs.PlateCarree(),
+            draw_labels=False,
+            linewidth=0.3,
+            color='w',
+            linestyle='--'
+        )
+
+        # let cartopy choose tick positions
+        xs = gl.xlocator.tick_values(*ax.get_extent(ccrs.PlateCarree())[:2])
+        ys = gl.ylocator.tick_values(*ax.get_extent(ccrs.PlateCarree())[2:])
+        
+        # plot labels with background
+        for x in xs[1:-1]:
+            ax.text(
+                x, self.config.bbox[2] + 0.3,
+                LONGITUDE_FORMATTER(x),
+                transform=ccrs.PlateCarree(),
+                ha='center', va='bottom',
+                fontsize=5, color='black',
+                bbox=dict(fc='lightgrey', alpha=0.8, ec='none', boxstyle="round,pad=0.4")
+            )
+        
+        for y in ys[1:-1]:
+            ax.text(
+                self.config.bbox[0] + 0.3, y,
+                LATITUDE_FORMATTER(y),
+                transform=ccrs.PlateCarree(),
+                ha='left', va='center',
+                fontsize=5, color='black',
+                bbox=dict(fc='lightgrey', alpha=0.8, ec='none', boxstyle="round,pad=0.4")
+            )
 
         varbox = TextArea(
             f"{self.config.var2display}\n{self.config.region}", 
@@ -158,7 +200,7 @@ class Plotter:
             f"{source}",
             textprops=dict(
                 color="k", 
-                size=7, 
+                size=6, 
                 # weight='bold',
                 family='monospace',
                 horizontalalignment='left'
@@ -218,9 +260,11 @@ class Plotter:
         ax.add_artist(lsidebox)
 
         if self.config.outfile:
+            fname = f"{self.config.outfile}.{self.config.fileformat}"
             if not os.path.exists(os.path.dirname(self.config.outfile)):
                 os.makedirs(os.path.dirname(self.config.outfile))
-            plt.savefig(self.config.outfile, format="webp", dpi=self.config.dpi, bbox_inches='tight')
+            plt.savefig(fname, format=self.config.fileformat, dpi=self.config.dpi, bbox_inches='tight')
+            print(f"[INFO] File saved at {fname}")
 
         plt.close(fig)
 
