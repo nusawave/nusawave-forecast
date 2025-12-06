@@ -32,10 +32,15 @@ class SwhHandler(BaseHandler):
             ncolors=cmap.N,
             extend=self.config.extend,
         )
+        extend = self.config.extend
         skip = self.config.quiver.get("skip", 5)
         scale = self.config.quiver.get("scale", 80)
-        extend = self.config.extend
-
+        width = self.config.quiver.get("width", 0.5)
+        headwidth=self.config.quiver.get("headwidth",5)
+        headlength=self.config.quiver.get("headlength", 5)
+        headaxislength=self.config.quiver.get("headaxislength", 3)
+        minlength=self.config.quiver.get("minlength", 1)
+        minshaft=self.config.quiver.get("minshaft", 1)
         im = ax.contourf(
             mag.lon, mag.lat, mag,
             cmap=cmap,
@@ -51,6 +56,13 @@ class SwhHandler(BaseHandler):
             u[::skip, ::skip], v[::skip, ::skip],
             transform=ccrs.PlateCarree(),
             scale=scale,
+            width=width,
+            headwidth=headwidth,
+            headlength=headlength,
+            headaxislength=headaxislength,
+            minlength=minlength,
+            minshaft=minshaft,
+            pivot="middle",
         )
 
         return im
