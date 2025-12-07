@@ -84,7 +84,8 @@ class Plotter:
         fig = plt.figure(figsize=self.config.figsize, dpi=self.config.dpi)
         ax = plt.axes(projection=proj)
 
-        im = handler.plot(ax, data)
+        im, iq = handler.plot(ax, data)
+        print(im, iq)
 
         if im is not None:
             fig.canvas.draw()
@@ -101,10 +102,11 @@ class Plotter:
                                 orientation='horizontal', 
                                 pad=0.05,
                                 extend=self.config.extend)
-
+            cbar.ax.tick_params(direction='inout', labelsize=8)
+            cbar.ax.xaxis.set_major_formatter(FuncFormatter(self.__format_tick__))
             cbar.set_label("")
             cbar_ax.text(
-                1.05, -1.1,
+                1.05, -0.8,
                 f"{self.config.unit}",
                 va="center",
                 ha="left",
@@ -114,22 +116,20 @@ class Plotter:
                 transform=cbar_ax.transAxes
             )
 
-            cbar.ax.tick_params(labelsize=8)
-            cbar.ax.xaxis.set_major_formatter(FuncFormatter(self.__format_tick__))
-
-            if self.config.arrlabel is not None:
+            if iq is not None:
                 cbar_bbox = ax.get_position()
                 arrow_x = cbar_bbox.x0
                 arrow_y = cbar_bbox.y0 - 0.04  # Center vertically with the colorbar
 
                 fig.text(arrow_x+0.08, arrow_y, self.config.arrlabel, fontsize=8, ha='center', va='center')
                 arrax = fig.add_axes([arrow_x,arrow_y-0.005,0.014,0.01], frameon=True)
-                arrow_length = 0.015  # Length of the arrow
+                arrow_length = 0.01  # Length of the arrow
                 arrow_width = 0.01  # Width of the arrow shaft
-                head_width = 0.006  # Width of the arrow head
+                head_width = 0.01  # Width of the arrow head
                 head_length = 0.01  # Length of the arrow head
+                overhang = 1
 
-                arrax.arrow(0+0.02, 0, arrow_length, arrow_width, head_width=head_width, head_length=head_length, fc='k', ec='k')
+                arrax.arrow(0+0.02, 0, arrow_length, arrow_width, head_width=head_width, head_length=head_length, overhang=overhang, fc='k', ec='k')
                 arrax.axis('off')
 
         ax.coastlines(linewidth=1, zorder=2)

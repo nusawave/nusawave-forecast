@@ -2,6 +2,7 @@ import sys
 import importlib
 import cartopy.crs as ccrs
 from pathlib import Path
+import numpy as np
 
 def _ensure_project_root():
     """
@@ -119,3 +120,38 @@ def deep_update(base: dict, updates: dict):
         else:
             base[k] = v
     return base
+
+def compute_quiver_params(lat, lon, cfg):
+    lat = np.asarray(lat)
+    lon = np.asarray(lon)
+
+    # 1. Domain range
+    lat_range = float(lat.max() - lat.min())
+    lon_range = float(lon.max() - lon.min())
+
+    # 2. Robust resolution estimate
+    resolution = float(np.median(np.diff(lon)))
+
+    # 3. Estimate grid count
+    n_lat = lat_range / resolution
+    n_lon = lon_range / resolution
+    grid_count = np.sqrt(n_lat * n_lon)
+
+    # 4. Skip based on grid count
+    skip_factor = cfg.quiver.get("skipfactor", 30)
+    skip = max(1, int(grid_count / skip_factor))
+
+    # 5. Geometric correction of area
+    lat_mid = float((lat.max() + lat.min()) / 2)
+    effective_area = lat_range * lon_range * np.cos(np.deg2rad(lat_mid))
+    effective_area = max(effective_area, 1e-6)
+
+    # 6. Scale
+    scale_factor = cfg.quiver.get("scalefactor", 40)
+    scale = scale_factor / np.sqrt(effective_area)
+
+    # 7. Stabilize scale to realistic limits
+    scale = float(np.clip(scale, 60, 200))
+
+    print(skip, scale)
+    return skip, scale
