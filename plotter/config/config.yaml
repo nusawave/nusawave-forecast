@@ -7,20 +7,23 @@ regions:
     bbox: [90, 150, -15, 15]
     figsize: [9, 7]
     quiver:
-      skip: 4
-      scale: 60
+      skip: #4
+      scale: #60
 
   southeast_asia:
     bbox: [80, 160, -25, 25]
     quiver:
-      skip: 5
-      scale: 70
+      skip: #5
+      scale: #70
 
   java_nusa_tenggara:
     bbox: [103, 128, -13, -3]
     quiver:
-      skip: 2
-      scale: 50
+      skip: #2
+      scale: #50
+
+  malacca_strait:
+    bbox: [95, 105, 0, 6]
       
 # ========================================================
 # GLOBAL FALLBACK DEFAULTS
@@ -30,6 +33,16 @@ defaults:
   dpi: 100
   figsize: [8, 6]
   fileformat: "webp"
+  quiver:
+    width: 0.002
+    headwidth: 5
+    headlength: 5
+    headaxislength: 3
+    minlength: 0.1
+    minshaft: 0.1
+    pivot: "middle"
+    skipfactor: 30
+    scalefactor: 30
 
 # ========================================================
 # VARIABLE-SPECIFIC SETTINGS
