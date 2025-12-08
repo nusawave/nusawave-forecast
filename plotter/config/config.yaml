@@ -88,6 +88,9 @@ variables:
     cbrlabel: "Surface Wind Speed and Direction"
     arrlabel: "Wind Direction"
     levels: [0,2,4,6,8,10,15,20,25,30,35,40,50,60]
+    cmap: ["#C6EBFF","#A5D7E7","#63C7F7","#B5FFBD","#39E369",
+          "#B5DF73","#EFE66B","#F7BA73","#FF5D21","#CE200F",
+          "#FF2029","#E639C6","#AD348C","#6B176E"]
     extend: "max"
   
   swh:

@@ -2,6 +2,7 @@ from ..core.base_handler import BaseHandler
 from ..core.utils import load_model_params, select_bbox, select_time, select_level, compute_quiver_params
 import cartopy.crs as ccrs
 import numpy as np
+import matplotlib.colors as mcolors
 
 class WindHandler(BaseHandler):
     def load(self, ds):
@@ -30,13 +31,21 @@ class WindHandler(BaseHandler):
         mag = np.sqrt(u_np**2 + v_np**2)
         u_np = u_np / mag
         v_np = v_np / mag
+        cmap = mcolors.ListedColormap(self.config.cmap)
+        norm = mcolors.BoundaryNorm(
+            boundaries=self.config.levels,
+            ncolors=cmap.N,
+            extend=self.config.extend,
+        )
         skip, scale = compute_quiver_params(u.lat, u.lon, self.config)
         if self.config.quiver.get('skip') and self.config.quiver.get('scale') is not None:
             skip = self.config.quiver.get('skip')
             scale = self.config.quiver.get('scale')
         im = ax.contourf(
             u.lon, u.lat, mag,
-            cmap=self.config.cmap,
+            cmap=cmap,
+            norm=norm,
+            levels=self.config.levels,
             extend=self.config.extend,
             transform=ccrs.PlateCarree(),
         )
