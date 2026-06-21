@@ -46,6 +46,47 @@
     const modelSelect = document.getElementById('modelSelect');
     const timeSelect = document.getElementById('timeSelect');
     const mapImage = document.getElementById('mapImage');
+    const prevBtn = document.getElementById('prevBtn');
+    const playBtn = document.getElementById('playBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const overlay = document.getElementById('regionOverlay');
+    const regionHighlight = document.getElementById('regionHighlight');
+    const regionLabel = document.getElementById('regionLabel');
+
+    // UI parameter labels -> backend file slugs
+    const PARAM_SLUGS = {
+        surface_wind: 'wind',
+        swh: 'swh',
+        swell: 'swell',
+        rain: 'rainrate',
+        sfc_temp: 'temp',
+        rh: 'relhum',
+        mslp: 'mslp',
+        sst: 'seatemp',
+        sss: 'seasalt',
+        ssh: 'ssh',
+    };
+
+    const MODEL_DATASET = {
+        GFS: 'gfswave',
+        WW3: 'gfswave',
+    };
+
+    let playInterval = null;
+    let pendingMapSrc = null;
+
+    function showStaticMap() {
+        pendingMapSrc = null;
+        mapImage.src = 'assets/maps/staticmap.png';
+    }
+
+    mapImage.addEventListener('error', () => {
+        const failed = pendingMapSrc || mapImage.getAttribute('src');
+        if (!failed || failed.includes('staticmap.png')) return;
+        console.warn('Map image missing, falling back to overview:', failed);
+        pendingMapSrc = null;
+        mapImage.src = 'assets/maps/staticmap.png';
+    });
 
 
     /* ------------------------------------------------------------
@@ -65,22 +106,65 @@
     /* ------------------------------------------------------------
      * Update Map Image
      * ------------------------------------------------------------ */
+    function forecastMeta() {
+        const region = regionSelect.value;
+        const type = forecastSelect.value;
+        return CONFIG?.regions?.[region]?.forecast_types?.[type] || {};
+    }
+
+    function timeIndexFromLabel(label) {
+        const m = /^F(\d+)$/.exec(label || '');
+        return m ? m[1].padStart(3, '0') : null;
+    }
+
+    function isPlaceholderOption(value) {
+        if (!value) return true;
+        return /^(Type|Parameter|Model|Time) \(/i.test(String(value));
+    }
+
+    function isStaticMapMode() {
+        return isRegionPlaceholder(regionSelect.value);
+    }
+
+    function setRegionOverlayEnabled(enabled) {
+        if (!overlay) return;
+        overlay.style.pointerEvents = enabled ? 'auto' : 'none';
+        overlay.style.cursor = enabled ? 'pointer' : 'default';
+        if (!enabled) {
+            regionHighlight.style.display = 'none';
+            regionLabel.style.display = 'none';
+        }
+    }
+
     function updateMap() {
         const region = regionSelect.value;
-        const ftype = forecastSelect.value;
         const param = parameterSelect.value;
         const model = modelSelect.value;
         const ts = timeSelect.value;
 
-        // If config doesn't have that region yet, keep static map visible
-        if (!CONFIG || !CONFIG.regions || !CONFIG.regions[region]) {
-            // show the base static map
-            mapImage.src = "assets/maps/staticmap.webp";
+        setRegionOverlayEnabled(isStaticMapMode());
+
+        if (isRegionPlaceholder(region) || isPlaceholderOption(param) || isPlaceholderOption(ts)) {
+            showStaticMap();
             return;
         }
 
-        const filename = `${region}_${ftype}_${param}_${model}_${ts}.png`;
-        mapImage.src = `assets/maps/${region}/${filename}`;
+        const meta = forecastMeta();
+        if (!meta.parameters || !Object.keys(meta.parameters).length) {
+            showStaticMap();
+            return;
+        }
+
+        const paramSlug = PARAM_SLUGS[param] || param;
+        const timeIndex = timeIndexFromLabel(ts);
+        if (!timeIndex) {
+            showStaticMap();
+            return;
+        }
+
+        const dataset = meta.dataset || MODEL_DATASET[model] || 'gfswave';
+        pendingMapSrc = `assets/maps/${dataset}/${region}/${paramSlug}_${timeIndex}.webp`;
+        mapImage.src = pendingMapSrc;
     }
 
 
@@ -102,37 +186,111 @@
             populate(modelSelect, ["Model (Select a region first)"]);
             populate(timeSelect, ["Time (Select a region first)"]);
 
-            // Keep the base static map visible (do NOT clear src)
-            mapImage.src = "assets/maps/staticmap.webp";
+            setRegionOverlayEnabled(true);
+            showStaticMap();
             return;
         }
-        const types = Object.keys(CONFIG.regions[region]?.forecast_types || { 'Select Forecast Types': {} });
-        populate(forecastSelect, types);
+        const types = Object.keys(CONFIG.regions[region]?.forecast_types || {});
+        populate(forecastSelect, types.length ? types : ['Type (no data)']);
         loadParameters();
     }
 
     function loadParameters() {
         const region = regionSelect.value;
         const type = forecastSelect.value;
-        const params = Object.keys(CONFIG.regions[region].forecast_types[type]?.parameters || {});
-        populate(parameterSelect, params);
+        if (isPlaceholderOption(type)) {
+            populate(parameterSelect, ['Parameter (Select type first)']);
+            populate(modelSelect, ['Model (Select type first)']);
+            populate(timeSelect, ['Time (Select type first)']);
+            updateMap();
+            return;
+        }
+        const meta = CONFIG.regions[region]?.forecast_types?.[type];
+        const params = Object.keys(meta?.parameters || {});
+        populate(parameterSelect, params.length ? params : ['Parameter (no data)']);
         loadModels();
     }
 
     function loadModels() {
-        const region = regionSelect.value;
-        const type = forecastSelect.value;
-        const models = CONFIG.regions[region].forecast_types[type]?.models || [];
-        populate(modelSelect, models);
+        const meta = forecastMeta();
+        if (isPlaceholderOption(forecastSelect.value)) {
+            populate(modelSelect, ['Model (Select type first)']);
+            populate(timeSelect, ['Time (Select type first)']);
+            updateMap();
+            return;
+        }
+        const models = meta.models || [];
+        populate(modelSelect, models.length ? models : ['GFS']);
         loadTimes();
     }
 
     function loadTimes() {
-        const region = regionSelect.value;
-        const type = forecastSelect.value;
-        const times = CONFIG.regions[region].forecast_types[type]?.timestamps || [];
-        populate(timeSelect, times);
+        const meta = forecastMeta();
+        const param = parameterSelect.value;
+        if (isPlaceholderOption(param)) {
+            populate(timeSelect, ['Time (Select parameter first)']);
+            updateMap();
+            return;
+        }
+        const paramTimes = meta.parameters?.[param];
+        const times = Array.isArray(paramTimes) && paramTimes.length
+            ? paramTimes.filter(t => timeIndexFromLabel(t))
+            : (meta.timestamps || []).filter(t => timeIndexFromLabel(t));
+        populate(timeSelect, times.length ? times : ['Time (no data)']);
         updateMap();
+    }
+
+    function validTimeOptions() {
+        return [...timeSelect.options].filter(o => timeIndexFromLabel(o.value));
+    }
+
+    function stepTime(delta) {
+        const opts = validTimeOptions();
+        if (opts.length <= 1) return;
+        const current = timeSelect.options[timeSelect.selectedIndex];
+        let idx = opts.indexOf(current);
+        if (idx < 0) idx = 0;
+        idx += delta;
+        if (idx < 0 || idx >= opts.length) return;
+        opts[idx].selected = true;
+        updateMap();
+    }
+
+    function togglePlay() {
+        if (playInterval) {
+            clearInterval(playInterval);
+            playInterval = null;
+            playBtn.textContent = '▶️';
+            return;
+        }
+        const opts = validTimeOptions();
+        if (opts.length <= 1) return;
+        playBtn.textContent = '⏸️';
+        playInterval = setInterval(() => {
+            const list = validTimeOptions();
+            const current = timeSelect.options[timeSelect.selectedIndex];
+            let idx = list.indexOf(current);
+            if (idx < 0) idx = 0;
+            if (idx >= list.length - 1) {
+                list[0].selected = true;
+            } else {
+                list[idx + 1].selected = true;
+            }
+            updateMap();
+        }, 800);
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => stepTime(-1));
+    if (nextBtn) nextBtn.addEventListener('click', () => stepTime(1));
+    if (playBtn) playBtn.addEventListener('click', togglePlay);
+
+    const overviewBtn = document.getElementById('overviewBtn');
+    if (overviewBtn) {
+        overviewBtn.addEventListener('click', () => {
+            if (playInterval) togglePlay();
+            regionSelect.value = 'Select Region (or Click on Map)';
+            loadForecastTypes();
+        });
     }
 
 
@@ -160,8 +318,44 @@
         { id: "southeast_asia", display: "Southeast Asia", bounds: [90, 150, -20, 25] },
     ];
 
-    // overlay element (must exist in HTML; you already added it)
-    const overlay = document.getElementById("regionOverlay");
+    function regionArea(bounds) {
+        const [lonMin, lonMax, latMin, latMax] = bounds;
+        return (lonMax - lonMin) * (latMax - latMin);
+    }
+
+    // Smallest bbox wins when regions overlap (e.g. Indonesia vs Java).
+    const regionsBySpecificity = [...regionDefs].sort(
+        (a, b) => regionArea(a.bounds) - regionArea(b.bounds)
+    );
+
+    function pickRegionAt(lon, lat) {
+        for (const r of regionsBySpecificity) {
+            const [lonMin, lonMax, latMin, latMax] = r.bounds;
+            if (lon >= lonMin && lon <= lonMax && lat >= latMin && lat <= latMax) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    function regionSelectOptions() {
+        const placeholder = "Select Region (or Click on Map)";
+        const ordered = regionDefs.map(r => r.id);
+        const extras = Object.keys(CONFIG?.regions || {}).filter(
+            k => k !== placeholder && !ordered.includes(k)
+        );
+        return [placeholder, ...ordered, ...extras];
+    }
+
+    function populateRegionSelect() {
+        populate(regionSelect, regionSelectOptions());
+        [...regionSelect.options].forEach(opt => {
+            const def = regionDefs.find(d => d.id === opt.value);
+            if (def) opt.textContent = def.display;
+        });
+    }
+
+    // overlay elements for static map region picking
 
     // Compute lon/lat from click position on overlay
     function clickToLonLat(clickX, clickY) {
@@ -176,37 +370,27 @@
         return { lon, lat };
     }
 
-    // click handler
+    // click handler — only active on static overview map
     overlay.addEventListener("click", function (e) {
+        if (!isStaticMapMode()) return;
+
         const rect = overlay.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
         const clickY = e.clientY - rect.top;
 
         const { lon, lat } = clickToLonLat(clickX, clickY);
-        console.log("click lon/lat:", lon.toFixed(3), lat.toFixed(3));
 
-        // find matching region
-        for (const r of regionDefs) {
-            const [lonMin, lonMax, latMin, latMax] = r.bounds;
-            if (lon >= lonMin && lon <= lonMax && lat >= latMin && lat <= latMax) {
-                console.log("Clicked region:", r.id, r.display);
-
-                // If CONFIG has the key, set it; otherwise set to slug anyway so user can see selection
-                regionSelect.value = r.id;
-                loadForecastTypes();
-                return;
-            }
+        const match = pickRegionAt(lon, lat);
+        if (match) {
+            regionSelect.value = match.id;
+            loadForecastTypes();
+            return;
         }
-
-        console.log("No region matched.");
     });
 
     /* ------------------------------------------------------------
-    * Hover Highlight + Label
+    * Hover Highlight + Label (static map only)
     * ------------------------------------------------------------ */
-
-    const regionHighlight = document.getElementById("regionHighlight");
-    const regionLabel = document.getElementById("regionLabel");
 
     // Convert lon/lat box → pixel box on screen
     function regionBoxToPixels(bounds) {
@@ -230,22 +414,14 @@
     }
 
     overlay.addEventListener("mousemove", function(e) {
+        if (!isStaticMapMode()) return;
 
         const rect = overlay.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
         const { lon, lat } = clickToLonLat(x, y);
-
-        let found = null;
-
-        for (const r of regionDefs) {
-            const [lonMin, lonMax, latMin, latMax] = r.bounds;
-            if (lon >= lonMin && lon <= lonMax && lat >= latMin && lat <= latMax) {
-                found = r;
-                break;
-            }
-        }
+        const found = pickRegionAt(lon, lat);
 
         if (!found) {
             regionHighlight.style.display = "none";
@@ -287,45 +463,25 @@
             const cfgRegions = Object.assign({}, CONFIG.regions || {});
             for (const r of regionDefs) {
                 if (!cfgRegions.hasOwnProperty(r.id)) {
-                    // placeholder minimal structure for each region if missing
                     cfgRegions[r.id] = {
-                        "forecast_types": {
-                            "Weather": {
-                                "parameters": {
-                                    "rain": [],
-                                    "sfc_temp": [],
-                                    "rh": [],
-                                    "mslp": []
+                        forecast_types: {
+                            'Wind and Waves': {
+                                parameters: {
+                                    surface_wind: [],
+                                    swh: [],
+                                    swell: [],
                                 },
-                                "models": ["GFS", "ECMWF"],
-                                "timestamps": []
+                                models: ['GFS'],
+                                timestamps: [],
+                                dataset: 'gfswave',
                             },
-                            "Wind and Waves": {
-                                "parameters": {
-                                    "surface_wind": [],
-                                    "swh": [],
-                                    "swell": []
-                                },
-                                "models": ["GFS", "WW3"],
-                                "timestamps": []
-                            }
-                        }
+                        },
                     };
                 }
             }
             CONFIG.regions = cfgRegions;
 
-            populate(regionSelect, Object.keys(CONFIG.regions));
-
-            // if you prefer human readable labels in the select, replace options text here
-            // (we keep option values as keys, so filenames use keys)
-            [...regionSelect.options].forEach(opt => {
-                const def = regionDefs.find(d => d.id === opt.value);
-                if (def) opt.textContent = def.display;
-            });
-
-            // debug
-            console.log("Available regions loaded:", Object.keys(CONFIG.regions));
+            populateRegionSelect();
 
             regionSelect.onchange = loadForecastTypes;
             forecastSelect.onchange = loadParameters;
@@ -341,11 +497,9 @@
             const tmp = {};
             regionDefs.forEach(d => tmp[d.id] = {});
             CONFIG = { regions: tmp };
-            populate(regionSelect, Object.keys(CONFIG.regions));
-            [...regionSelect.options].forEach(opt => {
-                const def = regionDefs.find(d => d.id === opt.value);
-                if (def) opt.textContent = def.display;
-            });
+            populateRegionSelect();
+            regionSelect.onchange = loadForecastTypes;
+            loadForecastTypes();
         });
 
     document.querySelectorAll('.service-card').forEach(card => {

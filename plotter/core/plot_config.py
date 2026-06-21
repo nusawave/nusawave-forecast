@@ -24,6 +24,7 @@ class PlotConfig:
         # Scientific dimension selections
         time_index=None,      # time index (int)
         time_value=None,      # actual timestamp
+        forecast_hour=None,   # hours since baserun (0 = analysis)
         bbox=None,            # [min_lon, max_lon, min_lat, max_lat]
         level=None,           # pressure level (hPa)
         depth=None,           # depth selection (meters)
@@ -48,6 +49,7 @@ class PlotConfig:
         # Flexible scientific configuration
         self.time_index = time_index
         self.time_value = time_value
+        self.forecast_hour = forecast_hour
         self.level = level
         self.depth = depth
         self.dataset = dataset

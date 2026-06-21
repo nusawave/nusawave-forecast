@@ -56,7 +56,23 @@ def select_bbox(data, cfg):
     if not cfg.bbox:
         return data
     minlon, maxlon, minlat, maxlat = cfg.bbox
-    return data.sel(lon=slice(minlon, maxlon), lat=slice(minlat, maxlat))
+
+    lon_slice = slice(minlon, maxlon)
+    if "lat" in data.coords:
+        lat_vals = data["lat"].values
+        if len(lat_vals) > 1 and lat_vals[0] > lat_vals[-1]:
+            lat_slice = slice(maxlat, minlat)
+        else:
+            lat_slice = slice(minlat, maxlat)
+        return data.sel(lon=lon_slice, lat=lat_slice)
+    if "latitude" in data.coords:
+        lat_vals = data["latitude"].values
+        if len(lat_vals) > 1 and lat_vals[0] > lat_vals[-1]:
+            lat_slice = slice(maxlat, minlat)
+        else:
+            lat_slice = slice(minlat, maxlat)
+        return data.sel(longitude=lon_slice, latitude=lat_slice)
+    return data
 
 def select_level(data, cfg):
     if cfg.level is None:
@@ -80,16 +96,18 @@ def select_depth(data, cfg):
     return data
 
 def get_dataset_url(dataset, cycle):
+    """Return data access URL or path hint. OpenDAP is retired; gfswave uses GRIB2."""
     y = cycle[:4]
     m = cycle[4:6]
     d = cycle[6:8]
     h = cycle[8:10]
 
+    if dataset == "gfswave":
+        from .grib_loader import gfswave_grib_url
+        return gfswave_grib_url(cycle, 0)
+
     if dataset == "gfsatmos":
         return f"https://nomads.ncep.noaa.gov/dods/gfs_0p25/gfs{y}{m}{d}/gfs_0p25_{h}z"
-    
-    if dataset == "gfswave":
-        return f"https://nomads.ncep.noaa.gov/dods/wave/gfswave/{y}{m}{d}/gfswave.global.0p25_{h}z"
     
     if dataset == "ecmwfatmos":
         return f"https://example.ecmwf.int/era5_{y}{m}{d}_{h}.nc"   # placeholder
@@ -104,6 +122,20 @@ def get_dataset_url(dataset, cycle):
         return f"https://my.cmems-duacs.org/dods/global-analysis-forecast-phy/{y}{m}{d}.nc"
 
     raise ValueError("Unknown dataset source")
+
+
+def open_dataset(dataset, cycle, max_hours=None):
+    """Open a forecast dataset using the appropriate backend."""
+    if dataset == "gfswave":
+        from .grib_loader import load_gfswave_cycle, load_gfswave_forecast
+        if max_hours is not None and max_hours == 1:
+            return load_gfswave_forecast(cycle, 0)
+        hours = max_hours or 72
+        return load_gfswave_cycle(cycle, hours)
+
+    import xarray as xr
+    url = get_dataset_url(dataset, cycle)
+    return xr.open_dataset(url, engine="netcdf4")
 
 def deep_update(base: dict, updates: dict):
     """
@@ -153,5 +185,4 @@ def compute_quiver_params(lat, lon, cfg):
     # 7. Stabilize scale to realistic limits
     scale = float(np.clip(scale, 60, 200))
 
-    print(skip, scale)
     return skip, scale

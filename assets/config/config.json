@@ -1,37 +1,331 @@
 {
   "regions": {
     "Select Region (or Click on Map)": {},
-    "Indonesia": {
+    "malacca_strait": {
       "forecast_types": {
-        "Weather": {
-          "parameters": {
-            "rain": [],
-            "sfc_temp": [],
-            "rh": [],
-            "mslp": []
-          },
-          "models": ["GFS", "ECMWF"],
-          "timestamps": []
-        },
         "Wind and Waves": {
           "parameters": {
-            "surface_wind": [],
-            "swh": [],
-            "swell": []
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
           },
-          "models": ["GFS", "WW3"],
-          "timestamps": []
-        },
-        "Ocean": {
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "south_china_sea": {
+      "forecast_types": {
+        "Wind and Waves": {
           "parameters": {
-            "sst": [],
-            "sss": [],
-            "ssh": []
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
           },
-          "models": ["HYCOM"],
-          "timestamps": []
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "philippines": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "andaman_gulf_thailand": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "java_nusa_tenggara": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "western_indo": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "eastern_indo": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "indonesia": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
+        }
+      }
+    },
+    "southeast_asia": {
+      "forecast_types": {
+        "Wind and Waves": {
+          "parameters": {
+            "surface_wind": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swh": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ],
+            "swell": [
+              "F000",
+              "F001",
+              "F002",
+              "F003"
+            ]
+          },
+          "models": [
+            "GFS"
+          ],
+          "timestamps": [
+            "F000",
+            "F001",
+            "F002",
+            "F003"
+          ],
+          "dataset": "gfswave"
         }
       }
     }
-  }
+  },
+  "cycle": "2026062100",
+  "updated": "2026062100"
 }

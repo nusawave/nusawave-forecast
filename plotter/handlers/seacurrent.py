@@ -8,12 +8,12 @@ class SeacurrentHandler(BaseHandler):
         varnames = mapper["seacurrent"]
         u = ds[varnames["u"]]
         v = ds[varnames["v"]]
-        u = self.select_time(u)
-        v = self.select_time(v)
-        u = self.select_depth(u)
-        v = self.select_depth(v)
-        u = self.select_bbox(u)
-        v = self.select_bbox(v)
+        u = select_time(u, self.config)
+        v = select_time(v, self.config)
+        u = select_depth(u, self.config)
+        v = select_depth(v, self.config)
+        u = select_bbox(u, self.config)
+        v = select_bbox(v, self.config)
         return u, v
 
     def plot(self, ax, data):

@@ -3,28 +3,59 @@
 # ========================================================
 regions:
 
-  indonesia:
-    bbox: [90, 150, -15, 15]
-    figsize: [9, 7]
+  malacca_strait:
+    bbox: [95, 105, 0, 6]
     quiver:
-      skip: #4
-      scale: #60
+      skip: 2
+      scale: 50
 
-  southeast_asia:
-    bbox: [80, 160, -25, 25]
+  south_china_sea:
+    bbox: [105.5, 121, 6, 25]
     quiver:
-      skip: #5
-      scale: #70
+      skip: 3
+      scale: 55
+
+  philippines:
+    bbox: [116, 130, 6, 20]
+    quiver:
+      skip: 3
+      scale: 55
+
+  andaman_gulf_thailand:
+    bbox: [90, 105.5, 6, 18]
+    quiver:
+      skip: 3
+      scale: 55
 
   java_nusa_tenggara:
     bbox: [103, 128, -13, -3]
     quiver:
-      skip: #2
-      scale: #50
+      skip: 2
+      scale: 50
 
-  malacca_strait:
-    bbox: [95, 105, 0, 6]
-      
+  western_indo:
+    bbox: [95, 120, -13, 6]
+    quiver:
+      skip: 4
+      scale: 60
+
+  eastern_indo:
+    bbox: [120, 141, -13, 6]
+    quiver:
+      skip: 4
+      scale: 60
+
+  indonesia:
+    bbox: [90, 141, -13, 6]
+    quiver:
+      skip: 4
+      scale: 60
+
+  southeast_asia:
+    bbox: [90, 150, -20, 25]
+    quiver:
+      skip: 5
+      scale: 70
 # ========================================================
 # GLOBAL FALLBACK DEFAULTS
 # ========================================================

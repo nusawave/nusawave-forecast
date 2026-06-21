@@ -1,0 +1,10 @@
+matplotlib
+cartopy
+xarray
+numpy
+pyyaml
+netcdf4
+pandas
+pytest
+cfgrib
+eccodes

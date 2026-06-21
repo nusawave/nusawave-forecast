@@ -1,0 +1,53 @@
+Nusawave Forecast — Third-Party Notices
+Copyright (c) 2026 Nusawave Forecast. All rights reserved.
+
+This file provides attribution for external data sources and software used by
+this project. It does not change the terms of the CC BY-NC-ND 4.0 LICENSE.
+
+
+FORECAST DATA
+-------------
+
+NOAA Global Forecast System (GFS) Wave model data
+  Source: U.S. National Oceanic and Atmospheric Administration (NOAA)
+          National Centers for Environmental Prediction (NCEP)
+  Access:  https://nomads.ncep.noaa.gov/
+  Notes:   U.S. Government work. This project downloads GRIB2 files via HTTPS.
+           Users of derived forecast maps should not treat them as official
+           NOAA/NWS products. See NOAA and NWS terms of use for data policies.
+
+
+OPEN-SOURCE DEPENDENCIES
+------------------------
+
+This project uses the following Python libraries (non-exhaustive; see
+requirements.txt for the full list). Each is subject to its own license:
+
+  - matplotlib      — BSD-style license
+  - cartopy           — LGPL-3.0-or-later
+  - xarray            — Apache-2.0
+  - numpy             — BSD-style license
+  - pyyaml            — MIT
+  - netcdf4           — MIT
+  - pandas            — BSD 3-Clause
+  - pytest            — MIT
+  - cfgrib            — Apache-2.0
+  - eccodes             — Apache-2.0
+
+Install and review each package's license before redistribution or commercial
+use of a derivative work. This repository is licensed under CC BY-NC-ND 4.0;
+third-party licenses govern those components separately.
+
+
+BASE MAP / GEOGRAPHY
+--------------------
+
+Coastlines, borders, and geographic features rendered via Cartopy use Natural
+Earth and related geospatial data bundled with Cartopy, subject to Cartopy and
+Natural Earth terms.
+
+
+CONTACT
+-------
+
+Licensing and permission requests: nusawaveintelligence@gmail.com

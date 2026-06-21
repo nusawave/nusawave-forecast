@@ -77,6 +77,8 @@
           <select id="modelSelect"></select>
           <select id="timeSelect"></select>
 
+          <button type="button" id="overviewBtn" class="overview-btn">Overview map</button>
+
           <div class="timectrl-top">
             <button id="prevBtn">⬅️</button>
             <button id="playBtn">▶️</button>
@@ -86,12 +88,13 @@
 
       <div class="map-container">
           <div class="map-inner" id="regionMap">
-              <img id="mapImage" src="assets/maps/staticmap.webp">
+              <img id="mapImage" src="assets/maps/staticmap.png">
               <div id="regionOverlay"></div>
               <div id="regionHighlight"></div>
               <div id="regionLabel"></div>
           </div>
       </div>
+      </section>
 
       <section id="site" class="section">
         <h2>Site Forecast</h2>
@@ -125,6 +128,10 @@
           By combining lightweight technology, modern visualization, and 
           scientifically trusted data, Nusawave delivers fast, intuitive forecasts 
           that empower safer decisions at sea—whether for daily operations or voyage planning.</p>
+        <p><small>Forecast maps are derived from NOAA GFS Wave data and are provided for
+          informational purposes only. Source code is licensed under
+          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a>
+          (non-commercial, no derivatives).</small></p>
       </section>
       <section id="contact" class="section">
         <h2>Contact</h2>

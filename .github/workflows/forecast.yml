@@ -1,0 +1,62 @@
+name: Forecast Update
+
+on:
+  schedule:
+    # ~5 h after GFS 00/06/12/18 UTC cycles
+    - cron: '30 1,7,13,19 * * *'
+  workflow_dispatch:
+    inputs:
+      cycle:
+        description: 'Model cycle YYYYMMDDHH (optional; auto if empty)'
+        required: false
+        type: string
+      max_forecast:
+        description: 'Forecast length in hours'
+        required: false
+        default: '4'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system deps for Cartopy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgeos-dev libproj-dev proj-data proj-bin libeccodes-dev
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate logo if missing
+        run: |
+          if [ ! -f assets/icons/nusawave-logo.png ]; then
+            python scripts/generate_static_assets.py
+          fi
+
+      - name: Run forecast pipeline
+        env:
+          CYCLE: ${{ github.event.inputs.cycle }}
+          MAX_HOURS: ${{ github.event.inputs.max_forecast || '4' }}
+        run: bash scripts/run_forecast.sh
+
+      - name: Commit and push updated maps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/
+          if git diff --staged --quiet; then
+            echo "No map changes to commit"
+          else
+            git commit -m "chore: update GFS Wave forecast maps"
+            git push
+          fi
