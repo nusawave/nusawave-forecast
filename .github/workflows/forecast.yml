@@ -39,7 +39,7 @@ jobs:
 
       - name: Generate logo if missing
         run: |
-          if [ ! -f assets/icons/nusawave-logo.png ]; then
+          if [ ! -f assets/icons/nusawave-forecast-logo.png ] && [ ! -f assets/icons/nusawave-logo.png ]; then
             python scripts/generate_static_assets.py
           fi
 

@@ -16,21 +16,29 @@
         );
     }
 
+    function goToSection(id) {
+        setActive(id);
+        localStorage.setItem('nw_section', id);
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+        }
+    }
+
     buttons.forEach(b => {
         b.addEventListener('click', () => {
-            const sec = b.dataset.section;
-            setActive(sec);
-            localStorage.setItem('nw_section', sec);
-
-            // CLOSE SIDEBAR IN MOBILE
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('open');
-            }
+            goToSection(b.dataset.section);
         });
     });
 
     document.getElementById('hamburger').onclick = () =>
         document.getElementById('sidebar').classList.toggle('open');
+
+    document.querySelectorAll('.logo-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            goToSection(link.dataset.section || 'home');
+        });
+    });
 
     setActive(localStorage.getItem('nw_section') || 'map');
 
